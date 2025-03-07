@@ -22,7 +22,24 @@ func CreateDoctor(c *gin.Context) {
 }
 
 func GetDoctor(c *gin.Context) {
+	id := c.Param("id")
+	doctor, err := methods.GetDoctorByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Doctor not found"})
+		return
+	}
+	c.JSON(http.StatusOK, doctor)
 }
 
 func UpdateDoctorContact(c *gin.Context) {
+	id := c.Param("id")
+	var body struct {
+		ContactNo string `json:"contact_no"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	methods.UpdateDoctorContact(id, body.ContactNo)
+	c.JSON(http.StatusOK, gin.H{"message": "Updated successfully"})
 }
