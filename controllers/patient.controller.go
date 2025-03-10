@@ -5,6 +5,8 @@ import (
 	"hospital-management/models"
 	"net/http"
 
+	"hospital-management/utils"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -33,12 +35,23 @@ func GetPatient(c *gin.Context) {
 
 func UpdatePatientDetails(c *gin.Context) {
 	id := c.Param("id")
+	if err := utils.ValidateIDLength(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var body models.Patient
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	methods.UpdatePatientDetails(id, body.ContactNo, body.Address, body.DoctorID)
+
+	err := methods.UpdatePatientDetails(id, body.ContactNo, body.Address, body.DoctorID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update patient details"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Updated successfully"})
 }
 

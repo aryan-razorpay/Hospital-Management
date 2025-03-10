@@ -15,3 +15,10 @@ func ValidateContactNumber(contact string) error {
 	}
 	return nil
 }
+
+func ValidateIDLength(id string) error {
+	if len(id) != 5 {
+		return errors.New("ID must be 5 characters long")
+	}
+	return nil
+}
