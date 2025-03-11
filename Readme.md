@@ -40,7 +40,7 @@ hospital-management/
 │
 ├── methods/        # Data access layer
 │   ├── doctor.methods.go   # Doctor DB operations
-│   ├── patient.emthods.go  # Patient DB operations
+│   ├── patient.methods.go  # Patient DB operations
 │
 ├── mutex/            # Mutexing
 │   ├── main.go
