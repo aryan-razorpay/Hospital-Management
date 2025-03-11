@@ -22,3 +22,7 @@ func ValidateIDLength(id string) error {
 	}
 	return nil
 }
+func IsValidName(name string) bool {
+	re := regexp.MustCompile("^[A-Za-z]+$")
+	return re.MatchString(name)
+}

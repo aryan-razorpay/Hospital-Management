@@ -11,7 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
 var existingDoctor models.Doctor
+
 func CreateDoctor(c *gin.Context) {
 	var doctor models.Doctor
 	if err := c.ShouldBindJSON(&doctor); err != nil {
@@ -20,9 +22,13 @@ func CreateDoctor(c *gin.Context) {
 	}
 	mutex.Mu.Lock()
 	defer mutex.Mu.Unlock()
-
+	
 	if len(doctor.ContactNo) < 10 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Contact number must be at least 10 characters"})
+		return
+	}
+	if !utils.IsValidName(doctor.Name) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please Enter a Valid Name"})
 		return
 	}
 	if err := config.DB.Where("id = ?", doctor.ID).First(&existingDoctor).Error; err == nil {
@@ -30,9 +36,9 @@ func CreateDoctor(c *gin.Context) {
 		return
 	}
 	if err := config.DB.Where("contact_no = ?", doctor.ContactNo).First(&existingDoctor).Error; err == nil {
-        utils.ErrorResponse(c, http.StatusConflict, "Doctor with the same contact number already exists")
-        return
-    }
+		utils.ErrorResponse(c, http.StatusConflict, "Doctor with the same contact number already exists")
+		return
+	}
 	doctor.ID = uuid.New().String()[:5]
 	methods.CreateDoctor(&doctor)
 
@@ -41,9 +47,13 @@ func CreateDoctor(c *gin.Context) {
 
 func GetDoctor(c *gin.Context) {
 	id := c.Param("id")
+	if len(id) != 5 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID must be exactly 5 characters"})
+		return
+	}
 	doctor, err := methods.GetDoctorByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Doctor not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Doctor with given id not found"})
 		return
 	}
 	c.JSON(http.StatusOK, doctor)
@@ -73,9 +83,9 @@ func UpdateDoctorContact(c *gin.Context) {
 		return
 	}
 	if err := config.DB.Where("contact_no = ?", body.ContactNo).First(&existingDoctor).Error; err == nil {
-        utils.ErrorResponse(c, http.StatusConflict, "Doctor with the same contact number already exists")
-        return
-    }
+		utils.ErrorResponse(c, http.StatusConflict, "Doctor with the same contact number already exists")
+		return
+	}
 
 	err = methods.UpdateDoctorContact(id, body.ContactNo)
 	if err != nil {
@@ -85,5 +95,3 @@ func UpdateDoctorContact(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Updated successfully"})
 }
-
-
