@@ -39,8 +39,8 @@ hospital-management/
 │   ├── patient.go       # Patient schema
 │
 ├── methods/        # Data access layer
-│   ├── doctor_repo.go   # Doctor DB operations
-│   ├── patient_repo.go  # Patient DB operations
+│   ├── doctor.methods.go   # Doctor DB operations
+│   ├── patient.emthods.go  # Patient DB operations
 │
 ├── mutex/            # Mutexing
 │   ├── main.go
