@@ -80,8 +80,8 @@ func UpdatePatientDetails(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update patient details"})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Updated successfully"})
+	patient, _ := methods.GetPatientByID(id)
+	c.JSON(http.StatusOK, patient)
 }
 
 func GetPatientsByDoctorID(c *gin.Context) {

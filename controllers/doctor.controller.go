@@ -88,10 +88,11 @@ func UpdateDoctorContact(c *gin.Context) {
 	}
 
 	err = methods.UpdateDoctorContact(id, body.ContactNo)
+	doctor, _ := methods.GetDoctorByID(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update contact"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Updated successfully"})
+	c.JSON(http.StatusOK, doctor)
 }

@@ -13,7 +13,7 @@ func RegisterRoutes(router *gin.Engine) {
 	router.POST("/patient/", controllers.CreatePatient)
 	router.GET("/patient/:id", controllers.GetPatient)
 	router.PATCH("/patient/:id", controllers.UpdatePatientDetails)
-	router.GET("/patientbyDoctorId/:doctorId", controllers.GetPatientsByDoctorID)
+	router.GET("/fetchPatientByDoctorId/:doctorId", controllers.GetPatientsByDoctorID)
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Welcome to the Hospital Management System!")
 	})
